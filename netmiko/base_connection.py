@@ -2055,7 +2055,7 @@ You can also look at the Netmiko session_log or debug log for more information.
             )
 
             # Send the "secret" in response to password pattern
-            if re.search(pattern, output):
+            if re.search(pattern, output, flags=re_flags):
                 self.write_channel(self.normalize_cmd(self.secret))
                 output += self.read_until_prompt()
 
