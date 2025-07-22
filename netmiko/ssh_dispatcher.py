@@ -43,7 +43,7 @@ from netmiko.ciena import (
     CienaSaosFileTransfer,
 )
 from netmiko.cisco import CiscoAsaSSH, CiscoAsaFileTransfer
-from netmiko.cisco import CiscoApicSSH
+from netmiko.cisco import CiscoApicSSH, CiscoApSSH
 from netmiko.cisco import CiscoFtdSSH
 from netmiko.cisco import (
     CiscoIosSSH,
@@ -217,8 +217,9 @@ CLASS_MAPPER_BASE = {
     "ciena_saos": CienaSaosSSH,
     "ciena_saos10": CienaSaos10SSH,
     "ciena_waveserver": CienaWaveserverSSH,
-    "cisco_asa": CiscoAsaSSH,
+    "cisco_ap": CiscoApSSH,
     "cisco_apic": CiscoApicSSH,
+    "cisco_asa": CiscoAsaSSH,
     "cisco_ftd": CiscoFtdSSH,
     "cisco_ios": CiscoIosSSH,
     "cisco_nxos": CiscoNxosSSH,
