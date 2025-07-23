@@ -37,18 +37,11 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
     def send_config_set(self, *args: Any, **kwargs: Any) -> str:
         """Send config command(s). Requires separate calling of commit to apply."""
 
-        # Do not exit config mode - it won't allow until you commit or abort transaction
-        output = super().send_config_set(*args, **kwargs, exit_config_mode=False)
-        error_markers = [
-            "% Invalid input detected at '^' marker.",
-            "% Parameter not configured",
-            "% Ambiguous command:",
-        ]
-        for error_marker in error_markers:
-            if error_marker in output:
-                raise ValueError(
-                    f"Send config set failed with the following errors:\n\n{output}"
-                )
+        # Default 'exit_config_mode' to False unless it is explicitly overwritten
+        exit_config_mode = kwargs.get("exit_config_mode", False)
+        output = super().send_config_set(
+            *args, **kwargs, exit_config_mode=exit_config_mode
+        )
         return output
 
     def commit(
@@ -64,9 +57,9 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
         default (no options):
             command_string = commit
         confirm and confirm_delay:
-            command_string = commit confirmed <confirm_delay>
+            command_string = commit confirmed timeout <confirm_delay>
         description:
-            command_string = commit description <comment>
+            command_string = commit description <description>
 
         failed commit message example:
         % Failed to commit .. As error(s) encountered during commit operation...
