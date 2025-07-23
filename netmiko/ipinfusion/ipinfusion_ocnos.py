@@ -37,15 +37,24 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
     def send_config_set(self, *args: Any, **kwargs: Any) -> str:
         """Send config command(s). Requires separate calling of commit to apply."""
 
-        # Default 'exit_config_mode' to False unless it is explicitly overwritten
-        exit_config_mode = kwargs.get("exit_config_mode", False)
-        output = super().send_config_set(
-            *args, **kwargs, exit_config_mode=exit_config_mode
-        )
+        # Do not exit config mode - it won't allow until you commit or abort transaction
+        output = super().send_config_set(*args, **kwargs, exit_config_mode=False)
+        error_markers = [
+            "% Invalid input detected at '^' marker.",
+            "% Parameter not configured",
+            "% Ambiguous command:",
+        ]
+        for error_marker in error_markers:
+            if error_marker in output:
+                raise ValueError(
+                    f"Send config set failed with the following errors:\n\n{output}"
+                )
         return output
 
     def commit(
         self,
+        confirm: bool = False,
+        confirm_delay: Optional[int] = None,
         description: str = "",
         read_timeout: float = 120.0,
     ) -> str:
@@ -54,8 +63,10 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
 
         default (no options):
             command_string = commit
+        confirm and confirm_delay:
+            command_string = commit confirmed <confirm_delay>
         description:
-            command_string = commit description <description>
+            command_string = commit description <comment>
 
         failed commit message example:
         % Failed to commit .. As error(s) encountered during commit operation...
@@ -65,63 +76,20 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
         Use 'abort transaction' to terminate current transaction session and discard
         all uncommitted changes.
         """
+
+        if confirm_delay and not confirm:
+            raise ValueError(
+                "Invalid arguments supplied to commit: confirm_delay specified without confirm"
+            )
 
         error_marker = "Failed to commit"
 
         # Build proper command string based on arguments provided
         command_string = "commit"
-        if description:
-            command_string += f" description {description}"
-
-        # Enter config mode (if necessary)
-        output = self.config_mode()
-
-        new_data = self._send_command_str(
-            command_string,
-            expect_string=r"#",
-            strip_prompt=False,
-            strip_command=False,
-            read_timeout=read_timeout,
-        )
-        output += new_data
-        if error_marker in output:
-            raise ValueError(f"Commit failed with the following errors:\n\n{output}")
-
-        return output
-
-    def _commit_confirmed(
-        self,
-        confirm_delay: Optional[int] = None,
-        description: str = "",
-        read_timeout: float = 120.0,
-    ) -> str:
-        """
-        Commit confirmed the candidate configuration.
-
-        default (no options):
-            command_string = commit confirmed
-        confirm_delay:
-            command_string = commit confirmed timeout <confirm_delay>
-        description:
-            command_string = commit confirmed description <description>
-        confirm_delay and description:
-            command_string = commit confirmed timeout <confirm_delay> description <description>
-
-        failed commit message example:
-        % Failed to commit .. As error(s) encountered during commit operation...
-        Uncommitted configurations are retained in the current transaction session,
-        check 'show transaction current'.
-        Correct the reason for the failure and re-issue the commit.
-        Use 'abort transaction' to terminate current transaction session and discard
-        all uncommitted changes.
-        """
-
-        error_marker = "Failed to commit"
-
-        # Build proper command string based on arguments provided
-        command_string = "commit confirmed"
-        if confirm_delay:
-            command_string += f" timeout {str(confirm_delay)}"
+        if confirm:
+            command_string += " confirmed"
+            if confirm_delay:
+                command_string += f" timeout {str(confirm_delay)}"
         if description:
             command_string += f" description {description}"
 
