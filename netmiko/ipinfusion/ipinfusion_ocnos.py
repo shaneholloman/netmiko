@@ -59,7 +59,7 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
         confirm and confirm_delay:
             command_string = commit confirmed timeout <confirm_delay>
         comment (mapped to 'description' on device):
-            command_string = commit description <description>
+            command_string = commit description <comment>
 
         failed commit message example:
         % Failed to commit .. As error(s) encountered during commit operation...
@@ -84,7 +84,7 @@ class IpInfusionOcNOSBase(CiscoBaseConnection):
             if confirm_delay:
                 command_string += f" timeout {str(confirm_delay)}"
         if comment:
-            command_string += f" description {description}"
+            command_string += f" description {comment}"
 
         # Enter config mode (if necessary)
         output = self.config_mode()
