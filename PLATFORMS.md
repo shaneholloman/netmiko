@@ -114,6 +114,7 @@
 - Garderos GRS
 - Genexis Saturn SOLT33 (telnet only)
 - Lancom LCOS SX4
+- Moxa EDS
 - MRV Communications OptiSwitch
 - MRV LX
 - Nokia/Alcatel SR-OS
@@ -254,6 +255,7 @@
 - mellanox_mlnxos
 - mikrotik_routeros
 - mikrotik_switchos
+- moxa_nos
 - mrv_lx
 - mrv_optiswitch
 - nec_ix
