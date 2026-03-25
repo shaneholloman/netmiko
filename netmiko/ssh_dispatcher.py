@@ -155,6 +155,7 @@ from netmiko.ruckus import RuckusFastironTelnet
 from netmiko.ruijie import RuijieOSSSH, RuijieOSTelnet
 from netmiko.silverpeak import SilverPeakVXOASSH
 from netmiko.sixwind import SixwindOSSSH
+from netmiko.smartoptics import SmartOpticsDWDMSSH
 from netmiko.sophos import SophosSfosSSH
 from netmiko.teldat import TeldatCITSSH, TeldatCITTelnet
 from netmiko.telcosystems import TelcoSystemsBinosSSH, TelcoSystemsBinosTelnet
@@ -328,6 +329,7 @@ CLASS_MAPPER_BASE = {
     "ruijie_os": RuijieOSSSH,
     "silverpeak_vxoa": SilverPeakVXOASSH,
     "sixwind_os": SixwindOSSSH,
+    "smartoptics_dwdm": SmartOpticsDWDMSSH,
     "sophos_sfos": SophosSfosSSH,
     "supermicro_smis": SmciSwitchSmisSSH,
     "telcosystems_binos": TelcoSystemsBinosSSH,
