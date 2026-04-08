@@ -114,6 +114,8 @@
 - Fortinet
 - Garderos GRS
 - Genexis Saturn SOLT33 (telnet only)
+- Hioso OLT
+- Huawei ONT
 - Lancom LCOS SX4
 - Moxa EDS
 - MRV Communications OptiSwitch
@@ -160,6 +162,7 @@
 - audiocode_shell
 - avaya_ers
 - avaya_vsp
+- aviat_wtm
 - bintec_boss
 - broadcom_icos
 - brocade_fastiron
@@ -238,6 +241,7 @@
 - hp_procurve
 - huawei
 - huawei_olt
+- huawei_ont
 - huawei_smartax
 - huawei_smartaxmmi
 - huawei_vrp
@@ -325,7 +329,9 @@
 - genexis_solt33_telnet
 - hp_comware_telnet
 - hp_procurve_telnet
+- hioso_olt_telnet
 - huawei_olt_telnet
+- huawei_ont_telnet
 - huawei_telnet
 - infinera_packet_telnet
 - ipinfusion_ocnos_telnet
