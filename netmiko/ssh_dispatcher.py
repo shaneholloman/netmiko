@@ -157,6 +157,7 @@ from netmiko.raisecom import RaisecomRosTelnet
 from netmiko.ruckus import RuckusFastironSSH
 from netmiko.ruckus import RuckusFastironTelnet
 from netmiko.ruijie import RuijieOSSSH, RuijieOSTelnet
+from netmiko.iij import IIJSeilosSSH, IIJSeilosTelnet
 from netmiko.silverpeak import SilverPeakVXOASSH
 from netmiko.sixwind import SixwindOSSSH
 from netmiko.smartoptics import SmartOpticsDWDMSSH
@@ -334,6 +335,7 @@ CLASS_MAPPER_BASE = {
     "raisecom_ros": RaisecomRosSSH,
     "ruckus_fastiron": RuckusFastironSSH,
     "ruijie_os": RuijieOSSSH,
+    "iij_seilos": IIJSeilosSSH,
     "silverpeak_vxoa": SilverPeakVXOASSH,
     "sixwind_os": SixwindOSSSH,
     "smartoptics_dwdm": SmartOpticsDWDMSSH,
@@ -445,6 +447,7 @@ CLASS_MAPPER["raisecom_telnet"] = RaisecomRoapTelnet
 CLASS_MAPPER["raisecom_ros_telnet"] = RaisecomRosTelnet
 CLASS_MAPPER["ruckus_fastiron_telnet"] = RuckusFastironTelnet
 CLASS_MAPPER["ruijie_os_telnet"] = RuijieOSTelnet
+CLASS_MAPPER["iij_seilos_telnet"] = IIJSeilosTelnet
 CLASS_MAPPER["supermicro_smis_telnet"] = SmciSwitchSmisTelnet
 CLASS_MAPPER["telcosystems_binos_telnet"] = TelcoSystemsBinosTelnet
 CLASS_MAPPER["teldat_cit_telnet"] = TeldatCITTelnet
