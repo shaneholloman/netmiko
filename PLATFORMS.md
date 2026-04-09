@@ -117,6 +117,7 @@
 - Garderos GRS
 - Genexis Saturn SOLT33 (telnet only)
 - Hioso OLT
+- Hirschmann HiOS
 - Huawei ONT
 - IIJ SEIL
 - Lancom LCOS SX4
@@ -244,6 +245,7 @@
 - generic_termserver
 - h3c_comware
 - hillstone_stoneos
+- hirschmann_hios
 - hp_comware
 - hp_procurve
 - huawei
