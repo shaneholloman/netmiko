@@ -198,26 +198,6 @@ class FurukawaFitelnetBase(CiscoBaseConnection):
             )
         return output
 
-    def strip_command(self, command_string: str, output: str) -> str:
-        """Strip command echo from output.
-
-        FITELnet echoes the command with the prompt still on the same line
-        (e.g. ``TEST-HOST#show version`` or ``#show version``), so the base
-        implementation's ``output.startswith(cmd)`` check fails.  This
-        override additionally matches an echo line that ends with the command
-        after an optional prompt terminator (``>`` or ``#``).
-        """
-        cmd = command_string.strip()
-        if output.startswith(cmd):
-            return super().strip_command(command_string=command_string, output=output)
-
-        echo_pattern = rf"^.*?[>#]?{re.escape(cmd)}\s*$"
-        output_lines = output.split(self.RESPONSE_RETURN)
-        for i, line in enumerate(output_lines):
-            if re.match(echo_pattern, line.strip()):
-                return self.RESPONSE_RETURN.join(output_lines[i + 1 :])
-        return output
-
     def strip_prompt(self, a_string: str) -> str:
         """Strip the trailing router prompt from the output.
 
