@@ -105,6 +105,9 @@ def lock_channel(func: F) -> F:
 
 
 def flush_session_log(func: F) -> F:
+    """Deprecated: no longer used by Netmiko internally. Retained for any external
+    code that decorates custom methods with @flush_session_log."""
+
     @functools.wraps(func)
     def wrapper_decorator(self: "BaseConnection", *args: Any, **kwargs: Any) -> Any:
         try:
@@ -1492,7 +1495,6 @@ A paramiko SSHException occurred during connection creation:
             pass
         return new_data
 
-    @flush_session_log
     @select_cmd_verify
     def send_command_timing(
         self,
@@ -1643,7 +1645,6 @@ A paramiko SSHException occurred during connection creation:
             prompt = self.base_prompt
         return re.escape(prompt.strip())
 
-    @flush_session_log
     @select_cmd_verify
     def send_command(
         self,
@@ -2181,7 +2182,6 @@ You can also look at the Netmiko session_log or debug log for more information.
             commands = cfg_file.readlines()
         return self.send_config_set(commands, **kwargs)
 
-    @flush_session_log
     def send_config_set(
         self,
         config_commands: Union[str, Sequence[str], Iterator[str], TextIO, None] = None,
