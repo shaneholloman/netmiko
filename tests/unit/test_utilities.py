@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+import importlib.util
 import os
 import sys
 from os.path import dirname, join, relpath
+from pathlib import Path
+from unittest.mock import MagicMock
 import pytest
 
 from netmiko import utilities
@@ -285,9 +288,7 @@ def test_textfsm_w_index():
     """Convert raw CLI output to structured data using TextFSM template"""
     os.environ["NET_TEXTFSM"] = RESOURCE_FOLDER
     raw_output = "Cisco IOS Software, Catalyst 4500 L3 Switch Software"
-    result = utilities.get_structured_data(
-        raw_output, platform="cisco_ios", command="show version"
-    )
+    result = utilities.get_structured_data(raw_output, platform="cisco_ios", command="show version")
     assert result == [{"model": "4500"}]
     result = utilities.get_structured_data_textfsm(
         raw_output, platform="cisco_ios", command="show version"
@@ -316,25 +317,23 @@ def test_ntc_templates_discovery():
     # Next should be PIP installed ntc-tempaltes
     del os.environ["NET_TEXTFSM"]
     ntc_path = utilities.get_template_dir()
-    for py_path in sys.path:
-        if "site-packages" in py_path:
-            _, suffix = py_path.split("site-packages")
-            if len(suffix) > 1:  # Should be "" or "/"
-                continue
-            packages_dir = py_path
-            break
-    assert ntc_path == f"{packages_dir}/ntc_templates/templates"
+    ntc_module = importlib.util.find_spec("ntc_templates")
+    expected = str(Path(ntc_module.origin).parent / "templates")
+    assert ntc_path == expected
 
     # Next should use local index file in ~
-    # Will not work for CI-CD without pain so just test locally
     environment = os.getenv("environment", "local")
-    if environment != "gh_actions":
-        home_dir = os.path.expanduser("~")
-        ntc_path = utilities.get_template_dir(_skip_ntc_package=True)
-        assert ntc_path == f"{home_dir}/ntc-templates/ntc_templates/templates"
-    else:
+    home_ntc = Path.home() / "ntc-templates" / "ntc_templates" / "templates"
+    if environment == "gh_actions":
         with pytest.raises(ValueError):
-            ntc_path = utilities.get_template_dir(_skip_ntc_package=True)
+            utilities.get_template_dir(_skip_ntc_package=True)
+    elif not home_ntc.is_dir():
+        pytest.skip(
+            "~/ntc-templates not found on this machine; please install ntc-templates into your home dir!"
+        )
+    else:
+        ntc_path = utilities.get_template_dir(_skip_ntc_package=True)
+        assert ntc_path == str(home_ntc)
 
 
 def test_textfsm_index_relative_path():
@@ -549,3 +548,51 @@ def test_nokia_context_filter():
     test_case = 'foo[show router "Base" bgp]'
     out = utilities.nokia_context_filter(test_case)
     assert out != ""
+
+
+def test_check_serial_port_exact_match(monkeypatch):
+    """check_serial_port should return the port when an exact match is found."""
+    port1 = MagicMock()
+    port1.device = "/dev/ttyUSB0"
+    port2 = MagicMock()
+    port2.device = "/dev/ttyS0"
+    monkeypatch.setattr(
+        "netmiko.utilities.serial.tools.list_ports.comports", lambda: [port1, port2]
+    )
+    assert utilities.check_serial_port("/dev/ttyUSB0") == "/dev/ttyUSB0"
+    assert utilities.check_serial_port("/dev/ttyS0") == "/dev/ttyS0"
+
+
+def test_check_serial_port_no_partial_match(monkeypatch):
+    """check_serial_port should not match a port that is a substring of another."""
+    port1 = MagicMock()
+    port1.device = "COM9"
+    port2 = MagicMock()
+    port2.device = "COM99"
+    monkeypatch.setattr(
+        "netmiko.utilities.serial.tools.list_ports.comports", lambda: [port1, port2]
+    )
+    assert utilities.check_serial_port("COM9") == "COM9"
+    assert utilities.check_serial_port("COM99") == "COM99"
+
+
+def test_check_serial_port_not_found(monkeypatch):
+    """check_serial_port should raise ValueError when port is not found."""
+    port1 = MagicMock()
+    port1.device = "/dev/cu.Panther"
+    monkeypatch.setattr("netmiko.utilities.serial.tools.list_ports.comports", lambda: [port1])
+    with pytest.raises(ValueError, match="device /dev/cu.usbserial-1410 not found"):
+        utilities.check_serial_port("/dev/cu.usbserial-1410")
+
+
+def test_check_serial_port_multiple_matches(monkeypatch):
+    """check_serial_port should raise ValueError when multiple ports match."""
+    port1 = MagicMock()
+    port1.device = "COM9"
+    port2 = MagicMock()
+    port2.device = "COM9"
+    monkeypatch.setattr(
+        "netmiko.utilities.serial.tools.list_ports.comports", lambda: [port1, port2]
+    )
+    with pytest.raises(ValueError, match="Multiple ports found matching COM9"):
+        utilities.check_serial_port("COM9")

@@ -2,7 +2,7 @@
 [![PyPI](https://img.shields.io/pypi/v/netmiko.svg)](https://pypi.python.org/pypi/netmiko)
 [![Downloads](https://static.pepy.tech/badge/netmiko)](https://static.pepy.tech/badge/netmiko)
 [![GitHub contributors](https://img.shields.io/github/contributors/ktbyers/netmiko.svg)](https://GitHub.com/ktbyers/netmiko/graphs/contributors/)
-[![Code Style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <img src="https://ktbyers.github.io/netmiko/images/netmiko_logo_gh.png" width="320">
 
@@ -160,7 +160,7 @@ You can contribute to Netmiko in a variety of ways: answering questions on Slack
 
 Before contributing a new vendor/platform device type, remember that any code added needs to be supported in some fashion. To add a vendor/platform you can follow the outline [here](https://github.com/ktbyers/netmiko/blob/develop/VENDOR.md). Once you've worked on your first pass of your driver and have it functional, you'll need to include test data in order for it to be merged into develop, you can see the general flow of how to do that [here](https://github.com/ktbyers/netmiko/blob/develop/TESTING.md).
 
-For all code contributions, please ensure that you have ran `black` against the code or your code will fail the Travis CI build.
+For all code contributions, please ensure that you have ran `ruff format` against the code or your code will fail CI-CD checks.
 
 <br />
 
@@ -176,8 +176,8 @@ If you have questions or would like to discuss Netmiko, a #netmiko channel exist
 
 Special thanks to organizations and people that have helped support Netmiko development. In particular, these organizations have made meaningful contributions that help Netmiko keep moving forward:
 
-<a href="https://slurpit.io/"><img src="https://github.com/ktbyers/netmiko/blob/develop/images/slurpit.png" width="200" alt="Slurp'it Logo"></a>
-<a href="https://netpicker.io/"><img src="https://github.com/ktbyers/netmiko/blob/develop/images/netpicker.png" width="200" alt="Netpicker Logo"></a>
+<a href="https://slurpit.io/"><img src="https://raw.githubusercontent.com/ktbyers/netmiko/develop/images/slurpit.png" width="200" alt="Slurp'it Logo"></a>
+<a href="https://netpicker.io/"><img src="https://raw.githubusercontent.com/ktbyers/netmiko/develop/images/netpicker.png" width="200" alt="Netpicker Logo"></a>
 
 <br />
 <br />
